@@ -1,4 +1,7 @@
 import 'package:devcamper/browser_bootcamps/browser_bootcamps_model.dart';
+import 'package:devcamper/config.dart';
+import 'package:devcamper/controllers/bootcamp/bootcamp.dart';
+import 'package:devcamper/controllers/login/login_shared_service.dart';
 import 'package:devcamper/login/login.dart';
 import 'package:devcamper/login/manage_account.dart';
 import 'package:devcamper/manage_bootcamps/manage_bootcamp.dart';
@@ -6,6 +9,8 @@ import 'package:devcamper/manage_review/bootcamp_info.dart';
 import 'package:devcamper/manage_review/manage_review.dart';
 import 'package:devcamper/register.dart';
 import 'package:flutter/material.dart';
+
+import '../models/bootcamp/bootcamps_response_model.dart';
 
 class BrowserBootcamps extends StatefulWidget {
   const BrowserBootcamps({super.key});
@@ -15,6 +20,21 @@ class BrowserBootcamps extends StatefulWidget {
 }
 
 class _BrowserBootcampsState extends State<BrowserBootcamps> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getBootcamps();
+  }
+
+  BootcampsResponseModel? bootcamps;
+  void getBootcamps() async {
+    bootcamps = await BootcampService.getBootcamps();
+    setState(() {
+      
+    });
+  }
+
   final _milesformcontroller = TextEditingController();
   final _zipcodecontroller = TextEditingController();
   var dropdownvalue;
@@ -42,6 +62,7 @@ class _BrowserBootcampsState extends State<BrowserBootcamps> {
     '4,000',
     '2,000',
   ];
+
   GlobalKey _ratingkey = GlobalKey();
   GlobalKey _budgetkey = GlobalKey();
   @override
@@ -58,242 +79,251 @@ class _BrowserBootcampsState extends State<BrowserBootcamps> {
         centerTitle: true,
       ),
       drawer: Drawer(
-         child: Column(
-          children: [
-            Container(
-              height: size.height * 0.2,
-              decoration: BoxDecoration(
-                color: Color(0xffE05433),
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(
-                    left: size.width * 0.2, right: size.width * 0.2),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.laptop_windows_rounded,
-                      color: Colors.white,
-                    ),
-                    SizedBox(
-                      width: size.width * 0.02,
-                    ),
-                    Text(
-                      'DevCamper',
-                      style: TextStyle(
-                          fontSize: size.height * 0.025,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold),
-                    )
-                  ],
-                ),
+          child: Column(
+        children: [
+          Container(
+            height: size.height * 0.2,
+            decoration: BoxDecoration(
+              color: Color(0xffE05433),
+            ),
+            child: Padding(
+              padding: EdgeInsets.only(
+                  left: size.width * 0.2, right: size.width * 0.2),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.laptop_windows_rounded,
+                    color: Colors.white,
+                  ),
+                  SizedBox(
+                    width: size.width * 0.02,
+                  ),
+                  Text(
+                    'DevCamper',
+                    style: TextStyle(
+                        fontSize: size.height * 0.025,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+                  )
+                ],
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                  left: size.width * 0.02,
-                  right: size.width * 0.02,
-                  top: size.height * 0.02),
-              child: Column(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: ((context) => LoginPage())));
-                    },
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.login,
-                          color: Colors.grey.shade400,
-                        ),
-                        SizedBox(
-                          width: size.width * 0.01,
-                        ),
-                        Text(
-                          'Login',
-                          style: TextStyle(
-                              fontSize: size.height * 0.025,
-                              color: Colors.grey.shade400),
-                        ),
-                      ],
-                    ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+                left: size.width * 0.02,
+                right: size.width * 0.02,
+                top: size.height * 0.02),
+            child: Column(
+              children: [
+                InkWell(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: ((context) => LoginPage())));
+                  },
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.login,
+                        color: Colors.grey.shade400,
+                      ),
+                      SizedBox(
+                        width: size.width * 0.01,
+                      ),
+                      Text(
+                        'Login',
+                        style: TextStyle(
+                            fontSize: size.height * 0.025,
+                            color: Colors.grey.shade400),
+                      ),
+                    ],
                   ),
-                  SizedBox(
-                    height: size.height * 0.01,
+                ),
+                SizedBox(
+                  height: size.height * 0.01,
+                ),
+                Divider(
+                  color: Colors.grey.shade300,
+                ),
+                SizedBox(
+                  height: size.height * 0.01,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: ((context) => Register())));
+                  },
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.group_add,
+                        color: Colors.grey.shade400,
+                      ),
+                      SizedBox(
+                        width: size.width * 0.01,
+                      ),
+                      Text(
+                        'Register',
+                        style: TextStyle(
+                            fontSize: size.height * 0.025,
+                            color: Colors.grey.shade400),
+                      ),
+                    ],
                   ),
-                  Divider(
-                    color: Colors.grey.shade300,
+                ),
+                SizedBox(
+                  height: size.height * 0.01,
+                ),
+                Divider(
+                  color: Colors.grey.shade300,
+                ),
+                SizedBox(
+                  height: size.height * 0.01,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: ((context) => BrowserBootcamps())));
+                  },
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        'assets/image/browser_icon.png',
+                        color: Colors.grey.shade400,
+                        scale: 2,
+                      ),
+                      SizedBox(
+                        width: size.width * 0.01,
+                      ),
+                      Text(
+                        'Browse Bootcamps',
+                        style: TextStyle(
+                            fontSize: size.height * 0.025,
+                            color: Colors.grey.shade400),
+                      ),
+                    ],
                   ),
-                  SizedBox(
-                    height: size.height * 0.01,
+                ),
+                SizedBox(
+                  height: size.height * 0.01,
+                ),
+                Divider(
+                  color: Colors.grey.shade300,
+                ),
+                SizedBox(
+                  height: size.height * 0.01,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: ((context) => ManageBootcapm())));
+                  },
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.laptop_windows_rounded,
+                        color: Colors.grey.shade400,
+                      ),
+                      SizedBox(
+                        width: size.width * 0.01,
+                      ),
+                      Text(
+                        'Manage Bootcamps',
+                        style: TextStyle(
+                            fontSize: size.height * 0.025,
+                            color: Colors.grey.shade400),
+                      ),
+                    ],
                   ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: ((context) => Register())));
-                    },
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.group_add,
-                          color: Colors.grey.shade400,
-                        ),
-                        SizedBox(
-                          width: size.width * 0.01,
-                        ),
-                        Text(
-                          'Register',
-                          style: TextStyle(
-                              fontSize: size.height * 0.025,
-                              color: Colors.grey.shade400),
-                        ),
-                      ],
-                    ),
+                ),
+                SizedBox(
+                  height: size.height * 0.01,
+                ),
+                Divider(
+                  color: Colors.grey.shade300,
+                ),
+                SizedBox(
+                  height: size.height * 0.01,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: ((context) => ManageReview())));
+                  },
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        'assets/image/feedback.png',
+                        color: Colors.grey.shade400,
+                        scale: 23,
+                      ),
+                      SizedBox(
+                        width: size.width * 0.015,
+                      ),
+                      Text(
+                        'Manage Reviews',
+                        style: TextStyle(
+                            fontSize: size.height * 0.025,
+                            color: Colors.grey.shade400),
+                      ),
+                    ],
                   ),
-                  SizedBox(
-                    height: size.height * 0.01,
+                ),
+                SizedBox(
+                  height: size.height * 0.01,
+                ),
+                Divider(
+                  color: Colors.grey.shade300,
+                ),
+                SizedBox(
+                  height: size.height * 0.01,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: ((context) => ManageAccount())));
+                  },
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        'assets/image/user.png',
+                        color: Colors.grey.shade400,
+                        scale: 23,
+                      ),
+                      SizedBox(
+                        width: size.width * 0.015,
+                      ),
+                      Text(
+                        'Manage Account',
+                        style: TextStyle(
+                            fontSize: size.height * 0.025,
+                            color: Colors.grey.shade400),
+                      ),
+                    ],
                   ),
-                  Divider(
-                    color: Colors.grey.shade300,
-                  ),
-                  SizedBox(
-                    height: size.height * 0.01,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: ((context) => BrowserBootcamps())));
-                    },
-                    child: Row(
-                      children: [
-                        Image.asset(
-                          'assets/image/browser_icon.png',
-                          color: Colors.grey.shade400,
-                          scale: 2,
-                        ),
-                        SizedBox(
-                          width: size.width * 0.01,
-                        ),
-                        Text(
-                          'Browse Bootcamps',
-                          style: TextStyle(
-                              fontSize: size.height * 0.025,
-                              color: Colors.grey.shade400),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: size.height * 0.01,
-                  ),
-                  Divider(
-                    color: Colors.grey.shade300,
-                  ),
-                  SizedBox(
-                    height: size.height * 0.01,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: ((context) => ManageBootcapm())));
-                    },
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.laptop_windows_rounded,
-                          color: Colors.grey.shade400,
-                        ),
-                        SizedBox(
-                          width: size.width * 0.01,
-                        ),
-                        Text(
-                          'Manage Bootcamps',
-                          style: TextStyle(
-                              fontSize: size.height * 0.025,
-                              color: Colors.grey.shade400),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: size.height * 0.01,
-                  ),
-                  Divider(
-                    color: Colors.grey.shade300,
-                  ),
-                  SizedBox(
-                    height: size.height * 0.01,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: ((context) => ManageReview())));
-                    },
-                    child: Row(
-                      children: [
-                        Image.asset(
-                          'assets/image/feedback.png',
-                          color: Colors.grey.shade400,
-                          scale: 23,
-                        ),
-                        SizedBox(
-                          width: size.width * 0.015,
-                        ),
-                        Text(
-                          'Manage Reviews',
-                          style: TextStyle(
-                              fontSize: size.height * 0.025,
-                              color: Colors.grey.shade400),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: size.height * 0.01,
-                  ),
-                  Divider(
-                    color: Colors.grey.shade300,
-                  ),
-                  SizedBox(
-                    height: size.height * 0.01,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: ((context) => ManageAccount())));
-                    },
-                    child: Row(
-                      children: [
-                        Image.asset(
-                          'assets/image/user.png',
-                          color: Colors.grey.shade400,
-                          scale: 23,
-                        ),
-                        SizedBox(
-                          width: size.width * 0.015,
-                        ),
-                        Text(
-                          'Manage Account',
-                          style: TextStyle(
-                              fontSize: size.height * 0.025,
-                              color: Colors.grey.shade400),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: size.height * 0.01,
-                  ),
-                  Divider(
-                    color: Colors.grey.shade300,
-                  ),
-                  SizedBox(
-                    height: size.height * 0.01,
-                  ),
-                  Row(
+                ),
+                SizedBox(
+                  height: size.height * 0.01,
+                ),
+                Divider(
+                  color: Colors.grey.shade300,
+                ),
+                SizedBox(
+                  height: size.height * 0.01,
+                ),
+                InkWell(
+                  onTap: () {
+                    LoginSharedService.logout(context);
+                  },
+                  child: Row(
                     children: [
                       Icon(
                         Icons.login,
@@ -310,12 +340,12 @@ class _BrowserBootcampsState extends State<BrowserBootcamps> {
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        ],
+      )),
       body: Padding(
         padding: EdgeInsets.only(
             left: size.width * 0.02,
@@ -370,102 +400,128 @@ class _BrowserBootcampsState extends State<BrowserBootcamps> {
             SizedBox(
               height: size.height * 0.02,
             ),
+            bootcamps != null ?
             Expanded(
               child: ListView.builder(
                 shrinkWrap: true,
                 // physics: NeverScrollableScrollPhysics(),
-                itemCount: browserdata.length,
+                itemCount: bootcamps!.count,
                 itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    margin: EdgeInsets.only(top: size.height*0.01),
-                    // height: size.height * 0.1,
-                    // width: size.width,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.grey.shade400),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          children: [
-                            Image.asset(browserdata[index].image,height: size.height*0.1,),
-                          ],
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Container(
-                                  width: size.width*0.5,
-                                  child: InkWell(
-                                    onTap: () {
-                                      Navigator.push(context, MaterialPageRoute(builder: ((context) => BootcampInfo())));
-                                    },
-                                    child: Text(
-                                      browserdata[index].title,
-                                      style: TextStyle(
-                                        fontSize: size.height * 0.020,
-                                        color: Color(0xffE05433),
+                  return bootcamps!.bootcampData != null
+                      ? Container(
+                          margin: EdgeInsets.only(top: size.height * 0.01),
+                          // height: size.height * 0.1,
+                          // width: size.width,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.grey.shade400),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                children: [
+                                  Image.network(
+                                    Config.imageUrl +
+                                        bootcamps!.bootcampData![index].photo
+                                            .toString(),
+                                    height: size.height * 0.1,
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Container(
+                                        width: size.width * 0.5,
+                                        child: InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: ((context) =>
+                                                        BootcampInfo(bootcampId:bootcamps!.bootcampData![index].id.toString()))));
+                                          },
+                                          child: Text(
+                                            bootcamps!.bootcampData![index].name
+                                                .toString(),
+                                            style: TextStyle(
+                                              fontSize: size.height * 0.020,
+                                              color: Color(0xffE05433),
+                                            ),
+                                          ),
+                                        ),
                                       ),
+                                      Container(
+                                        height: size.height * 0.03,
+                                        width: size.width * 0.09,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xff28a745),
+                                        ),
+                                        child: Center(
+                                            child: Text(
+                                          bootcamps!.bootcampData![index]
+                                                      .averageRating !=
+                                                  null
+                                              ? bootcamps!.bootcampData![index]
+                                                  .averageRating
+                                                  .toString()
+                                              : 0.0.toString(),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        )),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: size.height * 0.005,
+                                  ),
+                                  Container(
+                                    height: size.height * 0.022,
+                                    width: size.width * 0.23,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xff343a40),
                                     ),
+                                    child: Center(
+                                        child: Text(
+                                      bootcamps!.bootcampData![index].name
+                                          .toString(),
+                                      style: TextStyle(
+                                          fontSize: size.height * 0.018,
+                                          color: Colors.white),
+                                    )),
                                   ),
-                                ),
-                                
-                                Container(
-                              height: size.height * 0.03,
-                                  width: size.width * 0.09,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xff28a745),
+                                  SizedBox(
+                                    height: size.height * 0.01,
                                   ),
-                                  child: Center(
-                                      child: Text(
-                                    browserdata[index].rating,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  )),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: size.height*0.005,),
-                             Container(
-                               height: size.height * 0.022,
-                               width: size.width * 0.23,
-                               decoration: BoxDecoration(
-                                 color: Color(0xff343a40),
-                               ),
-                               child: Center(
-                                   child: Text(
-                                 browserdata[index].degreename,
-                                 style: TextStyle(
-                                     fontSize: size.height * 0.018,
-                                     color: Colors.white),
-                               )),
-                             ),
-                        SizedBox(height: size.height*0.01,),
-                          Container(
-                               width: size.width*0.6,
-                               child: Text(
-                                   browserdata[index].profection,
-                                   style: TextStyle(
-                                     fontSize: size.height * 0.013,
-                                   )),
-                             ),
-                       
-                          ],
-                        ),
-                        SizedBox(height: size.height*0.01,),
-                      ],
-                    ),
-                  );
-                 
-                 },
+                                  Container(
+                                    width: size.width * 0.6,
+                                    child: Text(
+                                        bootcamps!
+                                            .bootcampData![index].description
+                                            .toString(),
+                                        style: TextStyle(
+                                          fontSize: size.height * 0.013,
+                                        )),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: size.height * 0.01,
+                              ),
+                            ],
+                          ),
+                        )
+                      : Text('no list');
+                },
               ),
-            )
+            ) : Text('')
           ],
         ),
       ),
@@ -710,8 +766,8 @@ class _BrowserBootcampsState extends State<BrowserBootcamps> {
                             });
                           },
                         ),
-                        
-                         SizedBox(
+
+                        SizedBox(
                           height: size.height * 0.02,
                         ),
                         Text(

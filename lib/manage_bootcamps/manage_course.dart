@@ -1,4 +1,4 @@
-import 'package:devcamper/manage_bootcamps/add_bootcapm_courses.dart';
+import 'package:devcamper/manage_bootcamps/add_bootcamp_courses.dart';
 import 'package:devcamper/manage_bootcamps/manage_bootcamp.dart';
 import 'package:flutter/material.dart';
 
