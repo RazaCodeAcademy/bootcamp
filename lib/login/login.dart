@@ -7,6 +7,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'dart:html';
+import 'dart:ui' as ui;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -71,6 +74,10 @@ class _LoginPageState extends State<LoginPage> {
             'Log in to list your bootcamp or rate, review and favorite bootcamps',
             textAlign: TextAlign.justify,
             style: TextStyle(fontSize: size.height * 0.020),
+          ),
+          WebView(
+            initialUrl: Uri.dataFromString('<html><body><iframe src="https://www.youtube.com/embed/abc"></iframe></body></html>', mimeType: 'text/html').toString(),
+            javascriptMode: JavascriptMode.unrestricted,
           ),
           SizedBox(
             height: size.height * 0.02,

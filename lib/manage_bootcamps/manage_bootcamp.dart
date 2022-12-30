@@ -1,6 +1,9 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:http/http.dart' as http;
 import 'package:devcamper/browser_bootcamps/browser_bootcamps.dart';
+import 'package:devcamper/config.dart';
 import 'package:devcamper/controllers/bootcamp/bootcamp.dart';
 import 'package:devcamper/login/manage_account.dart';
 import 'package:devcamper/manage_bootcamps/add_bootcamp.dart';
@@ -9,11 +12,13 @@ import 'package:devcamper/login/login.dart';
 import 'package:devcamper/manage_bootcamps/manage_course.dart';
 import 'package:devcamper/manage_review/manage_review.dart';
 import 'package:devcamper/models/bootcamp/bootcamp_response_model.dart';
+import 'package:devcamper/models/photo/photo_request_model.dart';
 import 'package:devcamper/register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:snippet_coder_utils/FormHelper.dart';
 
 class ManageBootcapm extends StatefulWidget {
   const ManageBootcapm({super.key});
@@ -25,15 +30,17 @@ class ManageBootcapm extends StatefulWidget {
 class _ManageBootcapmState extends State<ManageBootcapm> {
   File? _image;
   final picker = ImagePicker();
+  bool isAPIcallProcess = false;
+  String? photo;
+  GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
   Future getimagefromgallary() async {
     final pickimage = await picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      if (pickimage != null) {
-        _image = File(pickimage.path);
-      } else {
-        print('No image selected');
-      }
-    });
+    if (pickimage != null) {
+      _image = File(pickimage.path);
+      setState(() {});
+    } else {
+      print('No image selected');
+    }
   }
 
   void initState() {
@@ -47,10 +54,36 @@ class _ManageBootcapmState extends State<ManageBootcapm> {
   BootcampResponseModel? bootcamp;
   void getBootcamp() async {
     bootcamp = await BootcampService.getUserBootcamp();
-    careers = bootcamp!.data != null
-        ? bootcamp!.data!.careers!.join(",")
-        : '';
+    careers = bootcamp!.data != null ? bootcamp!.data!.careers!.join(",") : '';
+    photo = bootcamp!.data != null ? bootcamp!.data!.photo : "";
     setState(() {});
+  }
+
+  Future<void> uploadImage() async {
+    var stream = http.ByteStream(_image!.openRead());
+    stream.cast();
+    // var length = await _image!.length();
+    print('adf');
+
+    var url = Uri.parse(
+        "${Config.apiURL}${Config.bootcampAPI}${bootcamp!.data!.id}/photo");
+    print(url);
+
+    var request = http.MultipartRequest('POST', url);
+
+    request.fields['title'] = 'static title';
+
+    var multiport = http.MultipartFile('file', stream, 10);
+
+    request.files.add(multiport);
+
+    var response = await request.send();
+    return Future<void>.value();
+    if (response.statusCode == 200) {
+      print('uploaded');
+    } else {
+      print('not uploaded');
+    }
   }
 
   @override
@@ -335,303 +368,337 @@ class _ManageBootcapmState extends State<ManageBootcapm> {
           ),
         ),
         body: Padding(
-                padding: EdgeInsets.only(
-                    left: size.width * 0.02,
-                    right: size.width * 0.02,
-                    top: size.height * 0.02),
-                child: bootcamp!.success == true
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+          padding: EdgeInsets.only(
+              left: size.width * 0.02,
+              right: size.width * 0.02,
+              top: size.height * 0.02),
+          child: bootcamp!.success == true
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Manage Bootcamp',
+                      style: TextStyle(
+                          fontSize: size.height * 0.025,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      height: size.height * 0.02,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: size.height * 0.01),
+                      // height: size.height * 0.1,
+                      // width: size.width,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: Colors.grey.shade400),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'Manage Bootcamp',
-                            style: TextStyle(
-                                fontSize: size.height * 0.025,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            height: size.height * 0.02,
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: size.height * 0.01),
-                            // height: size.height * 0.1,
-                            // width: size.width,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(color: Colors.grey.shade400),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  children: [
-                                    Image.asset(
-                                      'assets/image/image1.jpg',
-                                      height: size.height * 0.1,
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Container(
-                                          width: size.width * 0.5,
-                                          child: Text(
-                                            bootcamp!.data!.name.toString(),
-                                            style: TextStyle(
-                                              fontSize: size.height * 0.020,
-                                              color: Color(0xffE05433),
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          height: size.height * 0.03,
-                                          width: size.width * 0.09,
-                                          decoration: BoxDecoration(
-                                            color: Color(0xff28a745),
-                                          ),
-                                          child: Center(
-                                              child: Text(
-                                            bootcamp!.data!.averageRating !=
-                                                    null
-                                                ? bootcamp!.data!.averageRating
-                                                    .toString()
-                                                : '0.0',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
-                                          )),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: size.height * 0.005,
-                                    ),
-                                    Container(
-                                      height: size.height * 0.022,
-                                      width: size.width * 0.23,
-                                      decoration: BoxDecoration(
-                                        color: Color(0xff343a40),
-                                      ),
-                                      child: Center(
-                                          child: Text(
-                                        "${bootcamp!.data!.location!.city.toString()}, ${bootcamp!.data!.location!.country.toString()}",
-                                        style: TextStyle(
-                                            fontSize: size.height * 0.018,
-                                            color: Colors.white),
-                                      )),
-                                    ),
-                                    SizedBox(
-                                      height: size.height * 0.01,
-                                    ),
-                                    Container(
-                                      width: size.width * 0.6,
-                                      child: Text(careers.toString(),
-                                          style: TextStyle(
-                                            fontSize: size.height * 0.013,
-                                          )),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: size.height * 0.01,
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: size.height * 0.02,
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              minimumSize: const Size.fromHeight(50),
-                              shadowColor: Color(0xffE05433),
-                              foregroundColor: Colors.grey.shade400,
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(0),
-                                side: BorderSide(
-                                  color: Colors.grey.shade400,
-                                ),
+                          Column(
+                            children: [
+                              Image.network(
+                                Config.imageUrl + photo.toString(),
+                                height: size.height * 0.1,
                               ),
-                            ),
-                            child: Text(
-                              'Add Bootcamp Image',
-                              style: TextStyle(
-                                  fontSize: size.height * 0.022,
-                                  color: Colors.grey.shade500),
-                            ),
-                            onPressed: () {
-                              getimagefromgallary();
-                            },
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Container(
+                                    width: size.width * 0.5,
+                                    child: Text(
+                                      bootcamp!.data!.name.toString(),
+                                      style: TextStyle(
+                                        fontSize: size.height * 0.020,
+                                        color: Color(0xffE05433),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    height: size.height * 0.03,
+                                    width: size.width * 0.09,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xff28a745),
+                                    ),
+                                    child: Center(
+                                        child: Text(
+                                      bootcamp!.data!.averageRating != null
+                                          ? bootcamp!.data!.averageRating
+                                              .toString()
+                                          : '0.0',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    )),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: size.height * 0.005,
+                              ),
+                              Container(
+                                height: size.height * 0.022,
+                                width: size.width * 0.23,
+                                decoration: BoxDecoration(
+                                  color: Color(0xff343a40),
+                                ),
+                                child: Center(
+                                    child: Text(
+                                  "${bootcamp!.data!.location!.city.toString()}, ${bootcamp!.data!.location!.country.toString()}",
+                                  style: TextStyle(
+                                      fontSize: size.height * 0.018,
+                                      color: Colors.white),
+                                )),
+                              ),
+                              SizedBox(
+                                height: size.height * 0.01,
+                              ),
+                              Container(
+                                width: size.width * 0.6,
+                                child: Text(careers.toString(),
+                                    style: TextStyle(
+                                      fontSize: size.height * 0.013,
+                                    )),
+                              ),
+                            ],
                           ),
                           SizedBox(
-                            height: size.height * 0.02,
+                            height: size.height * 0.01,
                           ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey.shade200,
-                              minimumSize: const Size.fromHeight(50),
-                              shadowColor: Colors.grey,
-                              foregroundColor: Colors.grey.shade400,
-                              elevation: 0,
-                            ),
-                            child: Text(
-                              'Upload Image',
-                              style: TextStyle(
-                                  fontSize: size.height * 0.022,
-                                  color: Colors.grey.shade500),
-                            ),
-                            onPressed: () {},
-                          ),
-                          SizedBox(
-                            height: size.height * 0.04,
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xffE05433),
-                              minimumSize: const Size.fromHeight(50),
-                              shadowColor: Colors.grey,
-                              foregroundColor: Colors.grey.shade400,
-                              elevation: 0,
-                            ),
-                            child: Text(
-                              'Edit Bootcamp Detail',
-                              style: TextStyle(
-                                  fontSize: size.height * 0.022,
-                                  color: Colors.white),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: ((context) =>
-                                          EditBootcampDetail())));
-                            },
-                          ),
-                          SizedBox(
-                            height: size.height * 0.02,
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xff6c757d),
-                              minimumSize: const Size.fromHeight(50),
-                              shadowColor: Colors.grey,
-                              foregroundColor: Colors.grey.shade400,
-                              elevation: 0,
-                            ),
-                            child: Text(
-                              'Manage Courses',
-                              style: TextStyle(
-                                  fontSize: size.height * 0.022,
-                                  color: Colors.white),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: ((context) => ManageCourse())));
-                            },
-                          ),
-                          SizedBox(
-                            height: size.height * 0.02,
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xffdc3545),
-                              minimumSize: const Size.fromHeight(50),
-                              shadowColor: Colors.grey,
-                              foregroundColor: Colors.grey.shade400,
-                              elevation: 0,
-                            ),
-                            child: Text(
-                              'Remove Bootcamp',
-                              style: TextStyle(
-                                  fontSize: size.height * 0.022,
-                                  color: Colors.white),
-                            ),
-                            onPressed: () {},
-                          ),
-                          SizedBox(
-                            height: size.height * 0.05,
-                          ),
-                          Text(
-                            '* You can only add one bootcamp per account.',
-                            style: TextStyle(
-                                fontSize: size.height * 0.020,
-                                color: Colors.grey.shade400),
-                          ),
-                          SizedBox(
-                            height: size.height * 0.02,
-                          ),
-                          Text(
-                            '* You must be affiliated with the bootcamp in some way in order to add it to DevCamper.',
-                            style: TextStyle(
-                                fontSize: size.height * 0.020,
-                                color: Colors.grey.shade400),
-                          )
-                        ],
-                      )
-                    : Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Manage Bootcamp',
-                            style: TextStyle(
-                                fontSize: size.height * 0.025,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            height: size.height * 0.02,
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xffE05433),
-                              minimumSize: const Size.fromHeight(50),
-                              shadowColor: Colors.grey,
-                              foregroundColor: Colors.grey.shade400,
-                              elevation: 0,
-                            ),
-                            child: Text(
-                              'Add Bootcamp',
-                              style: TextStyle(
-                                  fontSize: size.height * 0.022,
-                                  color: Colors.white),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: ((context) => AddBootcamp())));
-                            },
-                          ),
-                          SizedBox(
-                            height: size.height * 0.05,
-                          ),
-                          Text(
-                            '* You can only add one bootcamp per account.',
-                            style: TextStyle(
-                                fontSize: size.height * 0.020,
-                                color: Colors.grey.shade400),
-                          ),
-                          SizedBox(
-                            height: size.height * 0.02,
-                          ),
-                          Text(
-                            '* You must be affiliated with the bootcamp in some way in order to add it to DevCamper.',
-                            style: TextStyle(
-                                fontSize: size.height * 0.020,
-                                color: Colors.grey.shade400),
-                          )
                         ],
                       ),
-              )
-            );
+                    ),
+                    SizedBox(
+                      height: size.height * 0.02,
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        minimumSize: const Size.fromHeight(50),
+                        shadowColor: Color(0xffE05433),
+                        foregroundColor: Colors.grey.shade400,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(0),
+                          side: BorderSide(
+                            color: Colors.grey.shade400,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        'Add Bootcamp Image',
+                        style: TextStyle(
+                            fontSize: size.height * 0.022,
+                            color: Colors.grey.shade500),
+                      ),
+                      onPressed: () {
+                        getimagefromgallary();
+                      },
+                    ),
+                    SizedBox(
+                      height: size.height * 0.02,
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey.shade200,
+                        minimumSize: const Size.fromHeight(50),
+                        shadowColor: Colors.grey,
+                        foregroundColor: Colors.grey.shade400,
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        'Upload Image',
+                        style: TextStyle(
+                            fontSize: size.height * 0.022,
+                            color: Colors.grey.shade500),
+                      ),
+                      onPressed: () {
+                        uploadImage();
+                        // if (validateAndSave()) {
+                        // setState(() {
+                        //   // isAPIcallProcess = true;
+
+                        //   // PhotoRequestModel model = PhotoRequestModel(
+                        //   //   file: _image,
+                        //   // );
+                        //   BootcampService.updateBootcampPhoto(
+                        //           _image as File, bootcamp!.data!.id)
+                        //       .then((response) => {
+                        //             setState(() {
+                        //               isAPIcallProcess = false;
+                        //             }),
+                        //             if (response == true)
+                        //               {
+                        //                 // photo = response.data
+                        //               }
+                        //             else
+                        //               {
+                        //                 FormHelper.showSimpleAlertDialog(
+                        //                     context,
+                        //                     Config.appName,
+                        //                     "Something went wrong!",
+                        //                     "OK", () {
+                        //                   Navigator.pop(context);
+                        //                 })
+                        //               }
+                        //           });
+                        // });
+                        // // }
+                      },
+                    ),
+                    SizedBox(
+                      height: size.height * 0.04,
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xffE05433),
+                        minimumSize: const Size.fromHeight(50),
+                        shadowColor: Colors.grey,
+                        foregroundColor: Colors.grey.shade400,
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        'Edit Bootcamp Detail',
+                        style: TextStyle(
+                            fontSize: size.height * 0.022, color: Colors.white),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: ((context) => EditBootcampDetail(
+                                    bootcampId: bootcamp!.data!.id))));
+                      },
+                    ),
+                    SizedBox(
+                      height: size.height * 0.02,
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xff6c757d),
+                        minimumSize: const Size.fromHeight(50),
+                        shadowColor: Colors.grey,
+                        foregroundColor: Colors.grey.shade400,
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        'Manage Courses',
+                        style: TextStyle(
+                            fontSize: size.height * 0.022, color: Colors.white),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: ((context) => ManageCourse())));
+                      },
+                    ),
+                    SizedBox(
+                      height: size.height * 0.02,
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xffdc3545),
+                        minimumSize: const Size.fromHeight(50),
+                        shadowColor: Colors.grey,
+                        foregroundColor: Colors.grey.shade400,
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        'Remove Bootcamp',
+                        style: TextStyle(
+                            fontSize: size.height * 0.022, color: Colors.white),
+                      ),
+                      onPressed: () {},
+                    ),
+                    SizedBox(
+                      height: size.height * 0.05,
+                    ),
+                    Text(
+                      '* You can only add one bootcamp per account.',
+                      style: TextStyle(
+                          fontSize: size.height * 0.020,
+                          color: Colors.grey.shade400),
+                    ),
+                    SizedBox(
+                      height: size.height * 0.02,
+                    ),
+                    Text(
+                      '* You must be affiliated with the bootcamp in some way in order to add it to DevCamper.',
+                      style: TextStyle(
+                          fontSize: size.height * 0.020,
+                          color: Colors.grey.shade400),
+                    )
+                  ],
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Manage Bootcamp',
+                      style: TextStyle(
+                          fontSize: size.height * 0.025,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      height: size.height * 0.02,
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xffE05433),
+                        minimumSize: const Size.fromHeight(50),
+                        shadowColor: Colors.grey,
+                        foregroundColor: Colors.grey.shade400,
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        'Add Bootcamp',
+                        style: TextStyle(
+                            fontSize: size.height * 0.022, color: Colors.white),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: ((context) => AddBootcamp())));
+                      },
+                    ),
+                    SizedBox(
+                      height: size.height * 0.05,
+                    ),
+                    Text(
+                      '* You can only add one bootcamp per account.',
+                      style: TextStyle(
+                          fontSize: size.height * 0.020,
+                          color: Colors.grey.shade400),
+                    ),
+                    SizedBox(
+                      height: size.height * 0.02,
+                    ),
+                    Text(
+                      '* You must be affiliated with the bootcamp in some way in order to add it to DevCamper.',
+                      style: TextStyle(
+                          fontSize: size.height * 0.020,
+                          color: Colors.grey.shade400),
+                    )
+                  ],
+                ),
+        ));
+  }
+
+  bool validateAndSave() {
+    final form = globalFormKey.currentState;
+    if (form!.validate()) {
+      return true;
+    }
+    return true;
   }
 }

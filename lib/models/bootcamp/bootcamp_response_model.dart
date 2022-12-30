@@ -31,6 +31,7 @@ class Data {
   final bool? acceptGi;
   final String? id;
   final String? user;
+  final String? address;
   final String? name;
   final String? description;
   final String? website;
@@ -52,6 +53,7 @@ class Data {
     this.jobGuarantee,
     this.acceptGi,
     this.id,
+    this.address,
     this.user,
     this.name,
     this.description,
@@ -83,6 +85,7 @@ class Data {
         name = json['name'] as String?,
         description = json['description'] as String?,
         website = json['website'] as String?,
+        address = json['address'] as String?,
         phone = json['phone'] as String?,
         email = json['email'] as String?,
         createdAt = json['createdAt'] as String?,
@@ -107,6 +110,7 @@ class Data {
         'name': name,
         'description': description,
         'website': website,
+        'address': address,
         'phone': phone,
         'email': email,
         'createdAt': createdAt,
