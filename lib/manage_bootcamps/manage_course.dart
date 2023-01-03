@@ -1,32 +1,69 @@
+import 'package:devcamper/config.dart';
+import 'package:devcamper/controllers/bootcamp/bootcamp.dart';
+import 'package:devcamper/controllers/course/course.dart';
 import 'package:devcamper/manage_bootcamps/add_bootcamp_courses.dart';
+import 'package:devcamper/manage_bootcamps/edit_bootcamp_courses.dart';
 import 'package:devcamper/manage_bootcamps/manage_bootcamp.dart';
+import 'package:devcamper/models/bootcamp/bootcamp_response_model.dart';
 import 'package:flutter/material.dart';
+import 'package:snippet_coder_utils/FormHelper.dart';
 
 class ManageCourse extends StatefulWidget {
-  const ManageCourse({super.key});
+  String? bootcampId;
+  ManageCourse({this.bootcampId});
 
   @override
   State<ManageCourse> createState() => _ManageCourseState();
 }
 
 class _ManageCourseState extends State<ManageCourse> {
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getBootcamp();
+  }
+
+  String? photo;
+  String? careers;
+  bool isAPIcallProcess = false;
+
+  BootcampResponseModel? bootcamp;
+  void getBootcamp() async {
+    bootcamp = await BootcampService.getBootcamp(widget.bootcampId);
+    careers = bootcamp!.data != null ? bootcamp!.data!.careers!.join(",") : '';
+    photo = bootcamp!.data != null ? bootcamp!.data!.photo : "";
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    var size=MediaQuery.of(context).size;
+    var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Manage Courses',style: TextStyle(fontSize: size.height*0.025),),
+        title: Text(
+          'Manage Courses',
+          style: TextStyle(fontSize: size.height * 0.025),
+        ),
         centerTitle: true,
         backgroundColor: Color(0xffE05433),
         elevation: 0,
       ),
       body: Padding(
-        padding:EdgeInsets.only(left: size.width*0.02,right: size.width*0.02,top: size.height*0.02),
+        padding: EdgeInsets.only(
+            left: size.width * 0.02,
+            right: size.width * 0.02,
+            top: size.height * 0.02),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Manage Courses',style: TextStyle(fontSize: size.height*0.025,fontWeight: FontWeight.bold),),
-            SizedBox(height: size.height*0.02,),
+            Text(
+              'Manage Courses',
+              style: TextStyle(
+                  fontSize: size.height * 0.025, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: size.height * 0.02,
+            ),
             Container(
               margin: EdgeInsets.only(top: size.height * 0.01),
               // height: size.height * 0.1,
@@ -41,8 +78,8 @@ class _ManageCourseState extends State<ManageCourse> {
                 children: [
                   Column(
                     children: [
-                      Image.asset(
-                        'assets/image/image1.jpg',
+                      Image.network(
+                        Config.imageUrl + photo.toString(),
                         height: size.height * 0.1,
                       ),
                     ],
@@ -56,7 +93,7 @@ class _ManageCourseState extends State<ManageCourse> {
                           Container(
                             width: size.width * 0.5,
                             child: Text(
-                              'Devworks Bootcamp',
+                              bootcamp!.data!.name.toString(),
                               style: TextStyle(
                                 fontSize: size.height * 0.020,
                                 color: Color(0xffE05433),
@@ -71,7 +108,9 @@ class _ManageCourseState extends State<ManageCourse> {
                             ),
                             child: Center(
                                 child: Text(
-                              '8.8',
+                              bootcamp!.data!.averageRating != null
+                                  ? bootcamp!.data!.averageRating.toString()
+                                  : '0.0',
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
@@ -90,7 +129,7 @@ class _ManageCourseState extends State<ManageCourse> {
                         ),
                         child: Center(
                             child: Text(
-                          'Boston, MA',
+                          "${bootcamp!.data!.location!.city.toString()}, ${bootcamp!.data!.location!.country.toString()}",
                           style: TextStyle(
                               fontSize: size.height * 0.018,
                               color: Colors.white),
@@ -101,11 +140,10 @@ class _ManageCourseState extends State<ManageCourse> {
                       ),
                       Container(
                         width: size.width * 0.6,
-                        child:
-                            Text('Web Development, UI/UX, Mobile Development',
-                                style: TextStyle(
-                                  fontSize: size.height * 0.013,
-                                )),
+                        child: Text(careers.toString(),
+                            style: TextStyle(
+                              fontSize: size.height * 0.013,
+                            )),
                       ),
                     ],
                   ),
@@ -115,8 +153,10 @@ class _ManageCourseState extends State<ManageCourse> {
                 ],
               ),
             ),
-           SizedBox(height: size.height*0.02,),
-           ElevatedButton(
+            SizedBox(
+              height: size.height * 0.02,
+            ),
+            ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xffE05433),
                 minimumSize: const Size.fromHeight(50),
@@ -130,101 +170,144 @@ class _ManageCourseState extends State<ManageCourse> {
                     fontSize: size.height * 0.022, color: Colors.white),
               ),
               onPressed: () {
-               Navigator.push(context, MaterialPageRoute(builder: ((context) => AddBootcampCourse())));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: ((context) =>
+                            AddBootcampCourse(bootcampId: widget.bootcampId))));
               },
             ),
-            SizedBox(height: size.height*0.02,),
+            SizedBox(
+              height: size.height * 0.02,
+            ),
             Divider(
               color: Colors.grey.shade400,
             ),
-            SizedBox(height: size.height*0.01,),
-            Text('Title',style: TextStyle(fontSize: size.height*0.025,fontWeight: FontWeight.bold),),
-            SizedBox(height: size.height*0.01,),
+            SizedBox(
+              height: size.height * 0.01,
+            ),
+            Text(
+              'Title',
+              style: TextStyle(
+                  fontSize: size.height * 0.025, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: size.height * 0.01,
+            ),
             // Divider(color: Colors.grey.shade400,),
-            Container(
-              height: size.height*0.1,
-              width: size.width,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-              ),
-              child: Padding(
-                padding:EdgeInsets.only(left: size.width*0.02,right: size.width*0.02),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Front End Web Development',style: TextStyle(fontSize: size.height*0.022),),
-                    Row(
-                      
-                      children: [
-                        Container(
-                          height: size.height*0.05,
-                          width: size.width*0.12,
-                          decoration: BoxDecoration(
-                            color: Color(0xff6c757d)
-                          ),
-                          child: IconButton(
-                            onPressed: (){
-                              Navigator.push(context, MaterialPageRoute(builder: ((context) => AddBootcampCourse())));
-                            }, icon:Icon(Icons.edit,color: Colors.white,)),
-                        ),
-                        SizedBox(width: size.width*0.015,),
-                         Container(
-                          height: size.height*0.05,
-                          width: size.width*0.12,
-                          decoration: BoxDecoration(
-                            color: Color(0xffdc3545),
-                          ),
-                          child: IconButton(
-                            onPressed: (){}, icon:Icon(Icons.close,color: Colors.white,)),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              height: size.height*0.1,
-              width: size.width,
-              decoration: BoxDecoration(
-                color: Colors.white,
-              ),
-              child: Padding(
-                padding:EdgeInsets.only(left: size.width*0.02,right: size.width*0.02),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Front Stack Web Development',style: TextStyle(fontSize: size.height*0.022),),
-                    Row(
-                      
-                      children: [
-                        Container(
-                          height: size.height*0.05,
-                          width: size.width*0.12,
-                          decoration: BoxDecoration(
-                            color: Color(0xff6c757d)
-                          ),
-                          child: IconButton(
-                            onPressed: (){
-                              Navigator.push(context, MaterialPageRoute(builder: ((context) => AddBootcampCourse())));
-                            }, icon:Icon(Icons.edit,color: Colors.white,)),
-                        ),
-                        SizedBox(width: size.width*0.015,),
-                         Container(
-                          height: size.height*0.05,
-                          width: size.width*0.12,
-                          decoration: BoxDecoration(
-                            color: Color(0xffdc3545),
-                          ),
-                          child: IconButton(
-                            onPressed: (){}, icon:Icon(Icons.close,color: Colors.white,)),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            bootcamp!.data!.courses!.length > 0
+                ? Expanded(
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        // physics: NeverScrollableScrollPhysics(),
+                        itemCount: bootcamp!.data!.courses?.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Container(
+                            height: size.height * 0.1,
+                            width: size.width,
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade200,
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  left: size.width * 0.02,
+                                  right: size.width * 0.02),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    bootcamp!.data!.courses![index].title
+                                        .toString(),
+                                    style: TextStyle(
+                                        fontSize: size.height * 0.022),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        height: size.height * 0.05,
+                                        width: size.width * 0.12,
+                                        decoration: BoxDecoration(
+                                            color: Color(0xff6c757d)),
+                                        child: IconButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: ((context) =>
+                                                          EditBootcampCourse(
+                                                              courseId:
+                                                                  bootcamp!
+                                                                      .data!
+                                                                      .courses![
+                                                                          index]
+                                                                      .id))));
+                                            },
+                                            icon: Icon(
+                                              Icons.edit,
+                                              color: Colors.white,
+                                            )),
+                                      ),
+                                      SizedBox(
+                                        width: size.width * 0.015,
+                                      ),
+                                      Container(
+                                        height: size.height * 0.05,
+                                        width: size.width * 0.12,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xffdc3545),
+                                        ),
+                                        child: IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                isAPIcallProcess = true;
+                                              });
+                                              CourseService.removeCourse(
+                                                      bootcamp!.data!
+                                                          .courses![index].id)
+                                                  .then((response) => {
+                                                        setState(() {
+                                                          isAPIcallProcess =
+                                                              false;
+                                                        }),
+                                                        if (response == true)
+                                                          {
+                                                            Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder: ((context) =>
+                                                                        ManageCourse(
+                                                                            bootcampId:
+                                                                                widget.bootcampId))))
+                                                          }
+                                                        else
+                                                          {
+                                                            FormHelper
+                                                                .showSimpleAlertDialog(
+                                                                    context,
+                                                                    Config
+                                                                        .appName,
+                                                                    "Something went wrong!",
+                                                                    "OK", () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            })
+                                                          }
+                                                      });
+                                            },
+                                            icon: Icon(
+                                              Icons.close,
+                                              color: Colors.white,
+                                            )),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }))
+                : Text('')
           ],
         ),
       ),

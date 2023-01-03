@@ -1,6 +1,8 @@
 import 'package:devcamper/controllers/reviews/review.dart';
+import 'package:devcamper/manage_review/add_review.dart';
 import 'package:devcamper/manage_review/bootcamp_info.dart';
 import 'package:devcamper/manage_review/edit_review.dart';
+import 'package:devcamper/models/review/read_reviews_response_model.dart';
 import 'package:devcamper/models/review/reviews_response_model.dart';
 import 'package:flutter/material.dart';
 
@@ -26,7 +28,7 @@ class _SubmitReviewState extends State<SubmitReview> {
 
   // List<dynamic>? courses = [];
 
-  ReviewsResponseModel? reviews;
+  ReadReviewsResponseModel? reviews;
   void getBootcampReviews() async {
     reviews = await ReviewService.getBootcampReviews(widget.bootcampId);
     print(reviews);
@@ -242,7 +244,7 @@ class _SubmitReviewState extends State<SubmitReview> {
                 ),
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: ((context) => EditReview(
+                      MaterialPageRoute(builder: ((context) => AddReview(
                         bootcampTitle:widget.bootcampTitle,
                         bootcampId:widget.bootcampId,
                         bootcampRating:widget.bootcampRating

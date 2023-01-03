@@ -2,44 +2,60 @@ import 'package:devcamper/config.dart';
 import 'package:devcamper/controllers/course/course.dart';
 import 'package:devcamper/manage_bootcamps/manage_course.dart';
 import 'package:devcamper/models/course/course_request_model.dart';
+import 'package:devcamper/models/course/course_response_model.dart';
 import 'package:flutter/material.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 
-class AddBootcampCourse extends StatefulWidget {
-  String? bootcampId;
-  AddBootcampCourse({this.bootcampId});
+class EditBootcampCourse extends StatefulWidget {
+  String? courseId;
+  EditBootcampCourse({this.courseId});
 
   @override
-  State<AddBootcampCourse> createState() => _AddBootcampCourseState();
+  State<EditBootcampCourse> createState() => _EditBootcampCourseState();
 }
 
-class _AddBootcampCourseState extends State<AddBootcampCourse> {
+class _EditBootcampCourseState extends State<EditBootcampCourse> {
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    print(widget.bootcampId);
-  }
   final _title = TextEditingController();
   final _duration = TextEditingController();
   final _tuition = TextEditingController();
   final _description = TextEditingController();
   bool scholarship = false;
   bool isAPIcallProcess = false;
+  var duration;
+  var tuition;
   var skillvalue;
   GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
-  var skill = [
-    'beginner', 'intermediate', 'advanced'
-  ];
+  var skill = ['beginner', 'intermediate', 'advanced'];
   final _skillkey = GlobalKey();
+
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCourse();
+  }
+
+  CourseResponseModel? course;
+  void getCourse() async {
+    course = await CourseService.getCourse(widget.courseId);
+    setState(() {
+      _title.text = course!.data!.title.toString();
+      skillvalue = course!.data!.minimumSkill;
+      scholarship = course!.data!.scholcarshipAvailable!;
+      tuition = course!.data!.tuition.toString();
+      _description.text = course!.data!.description.toString();
+      duration = course!.data!.weeks.toString();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
-          title: Text('Add Bootcamp Course',
+          title: Text('Edit Bootcamp Course',
               style: TextStyle(fontSize: size.height * 0.025)),
           elevation: 0,
           centerTitle: true,
@@ -68,7 +84,7 @@ class _AddBootcampCourseState extends State<AddBootcampCourse> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'DevWorks Bootcamp',
+              course!.data!.bootcamp!.name.toString(),
               style: TextStyle(
                   fontSize: size.height * 0.025, fontWeight: FontWeight.bold),
             ),
@@ -90,7 +106,7 @@ class _AddBootcampCourseState extends State<AddBootcampCourse> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Add Course',
+                      'Edit Course',
                       style: TextStyle(
                           fontSize: size.height * 0.025,
                           color: Color(0xffE05433),
@@ -152,7 +168,7 @@ class _AddBootcampCourseState extends State<AddBootcampCourse> {
                     ),
                     NumberInputWithIncrementDecrement(
                       buttonArrangement: ButtonArrangement.rightEnd,
-                      initialValue: 0,
+                      initialValue: int.parse(duration),
                       style: TextStyle(
                         color: Color(0xff6c757d),
                       ),
@@ -200,7 +216,7 @@ class _AddBootcampCourseState extends State<AddBootcampCourse> {
                     ),
                     NumberInputWithIncrementDecrement(
                       buttonArrangement: ButtonArrangement.rightEnd,
-                      initialValue: 0,
+                      initialValue: int.parse(tuition),
                       style: TextStyle(
                         color: Color(0xff6c757d),
                       ),
@@ -245,6 +261,7 @@ class _AddBootcampCourseState extends State<AddBootcampCourse> {
                       height: size.height * 0.01,
                     ),
                     DropdownButtonFormField(
+                      value: course!.data!.minimumSkill,
                       key: _skillkey,
                       elevation: 0,
                       dropdownColor: Colors.grey.shade200,
@@ -392,13 +409,13 @@ class _AddBootcampCourseState extends State<AddBootcampCourse> {
                         elevation: 0,
                       ),
                       child: Text(
-                        'Add Bootcamp Course',
+                        'Update Bootcamp Course',
                         style: TextStyle(
                             fontSize: size.height * 0.022, color: Colors.white),
                       ),
                       onPressed: () {
                         if (validateAndSave()) {
-                          print(widget.bootcampId);
+                          
                           setState(() {
                             isAPIcallProcess = true;
                             CourseRequestModel model = CourseRequestModel(
@@ -409,7 +426,7 @@ class _AddBootcampCourseState extends State<AddBootcampCourse> {
                               description: _description.text,
                               scholcarshipAvailable: scholarship,
                             );
-                            CourseService.addCourse(model, widget.bootcampId)
+                            CourseService.updateCourse(model, widget.courseId)
                                 .then((response) => {
                                       setState(() {
                                         isAPIcallProcess = false;
@@ -420,7 +437,11 @@ class _AddBootcampCourseState extends State<AddBootcampCourse> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: ((context) =>
-                                                      ManageCourse(bootcampId: widget.bootcampId))))
+                                                      ManageCourse(
+                                                          bootcampId: course!
+                                                              .data!
+                                                              .bootcamp!
+                                                              .id))))
                                         }
                                       else
                                         {

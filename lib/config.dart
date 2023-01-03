@@ -13,9 +13,12 @@ class Config {
 
   // bootcamp apis
   static const String bootcampsAPI = "/bootcamps";
-  static const String bootcampAPI = "/bootcamps/";
-  static const String bootcampReviewsAPI = "/bootcamps/";
   static const String userBootcampAPI = "/bootcamps/user/bootcamp";
 
-  // reviews apis
+  // course apis
+  static const String coursesAPI = "/courses";
+
+  // course apis
+  static const String reviewsAPI = "/reviews";
+  static const String userReviewsAPI = "/reviews/by-user";
 }

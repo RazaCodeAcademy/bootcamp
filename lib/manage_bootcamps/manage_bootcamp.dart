@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:devcamper/homepage.dart';
 import 'package:http/http.dart' as http;
 import 'package:devcamper/browser_bootcamps/browser_bootcamps.dart';
 import 'package:devcamper/config.dart';
@@ -66,7 +67,7 @@ class _ManageBootcapmState extends State<ManageBootcapm> {
     print('adf');
 
     var url = Uri.parse(
-        "${Config.apiURL}${Config.bootcampAPI}${bootcamp!.data!.id}/photo");
+        "${Config.apiURL}${"${Config.bootcampsAPI}/"}${bootcamp!.data!.id}/photo");
     print(url);
 
     var request = http.MultipartRequest('POST', url);
@@ -78,7 +79,7 @@ class _ManageBootcapmState extends State<ManageBootcapm> {
     request.files.add(multiport);
 
     var response = await request.send();
-    return Future<void>.value();
+
     if (response.statusCode == 200) {
       print('uploaded');
     } else {
@@ -367,7 +368,7 @@ class _ManageBootcapmState extends State<ManageBootcapm> {
             ],
           ),
         ),
-        body: Padding(
+        body: bootcamp != null ? Padding(
           padding: EdgeInsets.only(
               left: size.width * 0.02,
               right: size.width * 0.02,
@@ -401,7 +402,7 @@ class _ManageBootcapmState extends State<ManageBootcapm> {
                             children: [
                               Image.network(
                                 Config.imageUrl + photo.toString(),
-                                height: size.height * 0.1,
+                                height: size.height * 0.1
                               ),
                             ],
                           ),
@@ -598,7 +599,8 @@ class _ManageBootcapmState extends State<ManageBootcapm> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: ((context) => ManageCourse())));
+                                builder: ((context) => ManageCourse(
+                                    bootcampId: bootcamp!.data!.id))));
                       },
                     ),
                     SizedBox(
@@ -617,7 +619,35 @@ class _ManageBootcapmState extends State<ManageBootcapm> {
                         style: TextStyle(
                             fontSize: size.height * 0.022, color: Colors.white),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          isAPIcallProcess = true;
+                        });
+                        BootcampService.removeBootcamp(bootcamp!.data!.id)
+                            .then((response) => {
+                                  setState(() {
+                                    isAPIcallProcess = false;
+                                  }),
+                                  if (response == true)
+                                    {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: ((context) =>
+                                                  HomePage())))
+                                    }
+                                  else
+                                    {
+                                      FormHelper.showSimpleAlertDialog(
+                                          context,
+                                          Config.appName,
+                                          "Something went wrong!",
+                                          "OK", () {
+                                        Navigator.pop(context);
+                                      })
+                                    }
+                                });
+                      },
                     ),
                     SizedBox(
                       height: size.height * 0.05,
@@ -691,7 +721,7 @@ class _ManageBootcapmState extends State<ManageBootcapm> {
                     )
                   ],
                 ),
-        ));
+        ): Text(''));
   }
 
   bool validateAndSave() {

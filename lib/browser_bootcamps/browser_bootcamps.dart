@@ -27,12 +27,12 @@ class _BrowserBootcampsState extends State<BrowserBootcamps> {
     getBootcamps();
   }
 
+
   BootcampsResponseModel? bootcamps;
   void getBootcamps() async {
     bootcamps = await BootcampService.getBootcamps();
-    setState(() {
-      
-    });
+  
+    setState(() {});
   }
 
   final _milesformcontroller = TextEditingController();
@@ -400,128 +400,142 @@ class _BrowserBootcampsState extends State<BrowserBootcamps> {
             SizedBox(
               height: size.height * 0.02,
             ),
-            bootcamps != null ?
-            Expanded(
-              child: ListView.builder(
-                shrinkWrap: true,
-                // physics: NeverScrollableScrollPhysics(),
-                itemCount: bootcamps!.count,
-                itemBuilder: (BuildContext context, int index) {
-                  return bootcamps!.bootcampData != null
-                      ? Container(
-                          margin: EdgeInsets.only(top: size.height * 0.01),
-                          // height: size.height * 0.1,
-                          // width: size.width,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(color: Colors.grey.shade400),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                children: [
-                                  Image.network(
-                                    Config.imageUrl +
-                                        bootcamps!.bootcampData![index].photo
-                                            .toString(),
-                                    height: size.height * 0.1,
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Container(
-                                        width: size.width * 0.5,
-                                        child: InkWell(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: ((context) =>
-                                                        BootcampInfo(bootcampId:bootcamps!.bootcampData![index].id.toString()))));
-                                          },
-                                          child: Text(
-                                            bootcamps!.bootcampData![index].name
-                                                .toString(),
-                                            style: TextStyle(
-                                              fontSize: size.height * 0.020,
-                                              color: Color(0xffE05433),
-                                            ),
-                                          ),
+            bootcamps != null
+                ? Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      // physics: NeverScrollableScrollPhysics(),
+                      itemCount: bootcamps!.count,
+                      itemBuilder: (BuildContext context, int index) {
+                        return bootcamps!.bootcampData != null
+                            ? Container(
+                                margin:
+                                    EdgeInsets.only(top: size.height * 0.01),
+                                // height: size.height * 0.1,
+                                // width: size.width,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border:
+                                      Border.all(color: Colors.grey.shade400),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      children: [
+                                        Image.network(
+                                          Config.imageUrl +
+                                              bootcamps!
+                                                  .bootcampData![index].photo
+                                                  .toString(),
+                                          height: size.height * 0.1,
                                         ),
-                                      ),
-                                      Container(
-                                        height: size.height * 0.03,
-                                        width: size.width * 0.09,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xff28a745),
-                                        ),
-                                        child: Center(
-                                            child: Text(
-                                          bootcamps!.bootcampData![index]
-                                                      .averageRating !=
-                                                  null
-                                              ? bootcamps!.bootcampData![index]
-                                                  .averageRating
-                                                  .toString()
-                                              : 0.0.toString(),
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
-                                        )),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: size.height * 0.005,
-                                  ),
-                                  Container(
-                                    height: size.height * 0.022,
-                                    width: size.width * 0.23,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xff343a40),
+                                      ],
                                     ),
-                                    child: Center(
-                                        child: Text(
-                                      bootcamps!.bootcampData![index].name
-                                          .toString(),
-                                      style: TextStyle(
-                                          fontSize: size.height * 0.018,
-                                          color: Colors.white),
-                                    )),
-                                  ),
-                                  SizedBox(
-                                    height: size.height * 0.01,
-                                  ),
-                                  Container(
-                                    width: size.width * 0.6,
-                                    child: Text(
-                                        bootcamps!
-                                            .bootcampData![index].description
-                                            .toString(),
-                                        style: TextStyle(
-                                          fontSize: size.height * 0.013,
-                                        )),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: size.height * 0.01,
-                              ),
-                            ],
-                          ),
-                        )
-                      : Text('no list');
-                },
-              ),
-            ) : Text('')
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Container(
+                                              width: size.width * 0.5,
+                                              child: InkWell(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: ((context) =>
+                                                              BootcampInfo(
+                                                                  bootcampId: bootcamps!
+                                                                      .bootcampData![
+                                                                          index]
+                                                                      .id
+                                                                      .toString()))));
+                                                },
+                                                child: Text(
+                                                  bootcamps!
+                                                      .bootcampData![index].name
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                    fontSize:
+                                                        size.height * 0.020,
+                                                    color: Color(0xffE05433),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              height: size.height * 0.03,
+                                              width: size.width * 0.09,
+                                              decoration: BoxDecoration(
+                                                color: Color(0xff28a745),
+                                              ),
+                                              child: Center(
+                                                  child: Text(
+                                                bootcamps!.bootcampData![index]
+                                                            .averageRating !=
+                                                        null
+                                                    ? bootcamps!
+                                                        .bootcampData![index]
+                                                        .averageRating
+                                                        .toString()
+                                                    : 0.0.toString(),
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: size.height * 0.005,
+                                        ),
+                                        Container(
+                                          height: size.height * 0.022,
+                                          width: size.width * 0.23,
+                                          decoration: BoxDecoration(
+                                            color: Color(0xff343a40),
+                                          ),
+                                          child: Center(
+                                              child: Text(
+                                            bootcamps!.bootcampData != null ? bootcamps!.bootcampData![index].careers!.join(",") : '',
+                                            style: TextStyle(
+                                                fontSize: size.height * 0.018,
+                                                color: Colors.white),
+                                          )),
+                                        ),
+                                        SizedBox(
+                                          height: size.height * 0.01,
+                                        ),
+                                        Container(
+                                          width: size.width * 0.6,
+                                          child: Text(
+                                              bootcamps!.bootcampData![index]
+                                                  .description
+                                                  .toString(),
+                                              style: TextStyle(
+                                                fontSize: size.height * 0.013,
+                                              )),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: size.height * 0.01,
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Text('no list');
+                      },
+                    ),
+                  )
+                : Text('')
           ],
         ),
       ),

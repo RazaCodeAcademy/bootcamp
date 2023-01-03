@@ -1,25 +1,22 @@
 import 'dart:convert';
 
-ReviewsResponseModel reviewsResponseJson(String str) =>
-    ReviewsResponseModel.fromJson(json.decode(str));
+UserReviewsResponseModel userReviewsResponseJson(String str) =>
+    UserReviewsResponseModel.fromJson(json.decode(str));
 
-class ReviewsResponseModel {
+class UserReviewsResponseModel {
   bool? success;
   int? count;
-  Pagination? pagination;
   List<Data>? data;
 
-  ReviewsResponseModel({
+  UserReviewsResponseModel({
     this.success,
     this.count,
-    this.pagination,
     this.data,
   });
 
-  ReviewsResponseModel.fromJson(Map<String, dynamic> json) {
+  UserReviewsResponseModel.fromJson(Map<String, dynamic> json) {
     success = json['success'] as bool?;
     count = json['count'] as int?;
-    pagination = (json['pagination'] as Map<String,dynamic>?) != null ? Pagination.fromJson(json['pagination'] as Map<String,dynamic>) : null;
     data = (json['data'] as List?)?.map((dynamic e) => Data.fromJson(e as Map<String,dynamic>)).toList();
   }
 
@@ -27,74 +24,7 @@ class ReviewsResponseModel {
     final Map<String, dynamic> json = <String, dynamic>{};
     json['success'] = success;
     json['count'] = count;
-    json['pagination'] = pagination?.toJson();
     json['data'] = data?.map((e) => e.toJson()).toList();
-    return json;
-  }
-}
-
-class Pagination {
-  Next? next;
-  Prev? prev;
-
-  Pagination({
-    this.next,
-    this.prev,
-  });
-
-  Pagination.fromJson(Map<String, dynamic> json) {
-    next = (json['next'] as Map<String,dynamic>?) != null ? Next.fromJson(json['next'] as Map<String,dynamic>) : null;
-    prev = (json['prev'] as Map<String,dynamic>?) != null ? Prev.fromJson(json['prev'] as Map<String,dynamic>) : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> json = <String, dynamic>{};
-    json['next'] = next?.toJson();
-    json['prev'] = prev?.toJson();
-    return json;
-  }
-}
-
-class Next {
-  int? page;
-  int? limit;
-
-  Next({
-    this.page,
-    this.limit,
-  });
-
-  Next.fromJson(Map<String, dynamic> json) {
-    page = json['page'] as int?;
-    limit = json['limit'] as int?;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> json = <String, dynamic>{};
-    json['page'] = page;
-    json['limit'] = limit;
-    return json;
-  }
-}
-
-class Prev {
-  int? page;
-  int? limit;
-
-  Prev({
-    this.page,
-    this.limit,
-  });
-
-  Prev.fromJson(Map<String, dynamic> json) {
-    page = json['page'] as int?;
-    limit = json['limit'] as int?;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> json = <String, dynamic>{};
-    json['page'] = page;
-    json['limit'] = limit;
     return json;
   }
 }
@@ -105,7 +35,7 @@ class Data {
   String? text;
   int? rating;
   Bootcamp? bootcamp;
-  User? user;
+  String? user;
   String? createdAt;
   int? v;
 
@@ -126,7 +56,7 @@ class Data {
     text = json['text'] as String?;
     rating = json['rating'] as int?;
     bootcamp = (json['bootcamp'] as Map<String,dynamic>?) != null ? Bootcamp.fromJson(json['bootcamp'] as Map<String,dynamic>) : null;
-    user = (json['user'] as Map<String,dynamic>?) != null ? User.fromJson(json['user'] as Map<String,dynamic>) : null;
+    user = json['user'] as String?;
     createdAt = json['createdAt'] as String?;
     v = json['__v'] as int?;
   }
@@ -138,7 +68,7 @@ class Data {
     json['text'] = text;
     json['rating'] = rating;
     json['bootcamp'] = bootcamp?.toJson();
-    json['user'] = user?.toJson();
+    json['user'] = user;
     json['createdAt'] = createdAt;
     json['__v'] = v;
     return json;
@@ -164,7 +94,7 @@ class Bootcamp {
   String? slug;
   int? v;
   int? averageCost;
-  int? averageRating;
+  double? averageRating;
 
   Bootcamp({
     this.location,
@@ -185,7 +115,7 @@ class Bootcamp {
     this.slug,
     this.v,
     this.averageCost,
-    this.averageRating
+    this.averageRating,
   });
 
   Bootcamp.fromJson(Map<String, dynamic> json) {
@@ -207,7 +137,7 @@ class Bootcamp {
     slug = json['slug'] as String?;
     v = json['__v'] as int?;
     averageCost = json['averageCost'] as int?;
-    averageRating = json['averageRating'] as int?;
+    averageRating = json['averageRating'] as double?;
     id = json['id'] as String?;
   }
 
@@ -279,44 +209,6 @@ class Location {
     json['state'] = state;
     json['zipcode'] = zipcode;
     json['country'] = country;
-    return json;
-  }
-}
-
-class User {
-  String? role;
-  String? id;
-  String? name;
-  String? email;
-  String? createdAt;
-  int? v;
-
-  User({
-    this.role,
-    this.id,
-    this.name,
-    this.email,
-    this.createdAt,
-    this.v,
-  });
-
-  User.fromJson(Map<String, dynamic> json) {
-    role = json['role'] as String?;
-    id = json['_id'] as String?;
-    name = json['name'] as String?;
-    email = json['email'] as String?;
-    createdAt = json['createdAt'] as String?;
-    v = json['__v'] as int?;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> json = <String, dynamic>{};
-    json['role'] = role;
-    json['_id'] = id;
-    json['name'] = name;
-    json['email'] = email;
-    json['createdAt'] = createdAt;
-    json['__v'] = v;
     return json;
   }
 }

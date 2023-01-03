@@ -35,7 +35,7 @@ class BootcampService {
       "Access-Control-Allow-Credentials": true.toString(),
     };
 
-    var url = Uri.parse(Config.apiURL + Config.bootcampAPI + bootcampId);
+    var url = Uri.parse(Config.apiURL + Config.bootcampsAPI+"/" + bootcampId);
 
     var response = await client.get(url, headers: requestHeaders);
 
@@ -68,7 +68,7 @@ class BootcampService {
       "Authorization": "Bearer ${loginDetails[0]}"
     };
 
-    var url = Uri.parse(Config.apiURL + Config.bootcampAPI);
+    var url = Uri.parse(Config.apiURL + Config.bootcampsAPI+"/");
 
     var response = await client.post(url,
         headers: requestHeaders, body: jsonEncode(model));
@@ -86,12 +86,33 @@ class BootcampService {
       "Authorization": "Bearer ${loginDetails[0]}"
     };
 
-    var url = Uri.parse(Config.apiURL + Config.bootcampAPI + bootcampId);
+    var url = Uri.parse(Config.apiURL + Config.bootcampsAPI+"/" + bootcampId);
 
     var response =
         await client.put(url, headers: requestHeaders, body: jsonEncode(model));
 
     return bootcampResponseJson(response.body);
+  }
+
+  static Future<bool> removeBootcamp(bootcampId) async {
+    var loginDetails = await LoginSharedService.loginDetails();
+    Map<String, String> requestHeaders = {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*", // Required for CORS support to work
+      "Access-Control-Allow-Credentials": true.toString(),
+      "Authorization": "Bearer ${loginDetails[0]}"
+    };
+
+    var url = Uri.parse(Config.apiURL + Config.bootcampsAPI+"/" + bootcampId);
+
+    var response =
+        await client.delete(url, headers: requestHeaders);
+
+    if (response.statusCode == 200) {
+      return true;
+    }
+
+    return false;
   }
 
   static Future<bool> updateBootcampPhoto(File? file, bootcampId) async {
@@ -104,12 +125,11 @@ class BootcampService {
       "Authorization": "Bearer ${loginDetails[0]}"
     };
 
-    print('object');
     var stream = http.ByteStream(file!.openRead());
     var length = await file.length();
 
     var url =
-        Uri.parse("${Config.apiURL + Config.bootcampAPI + bootcampId}/photo");
+        Uri.parse("${Config.apiURL + Config.bootcampsAPI+"/" + bootcampId}/photo");
 
     var request = http.MultipartRequest('put', url);
 
@@ -118,7 +138,6 @@ class BootcampService {
     var multiport = http.MultipartFile('file', stream, length);
 
     request.files.add(multiport);
-
 
     var response = await request.send();
 

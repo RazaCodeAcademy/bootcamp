@@ -1,4 +1,5 @@
 import 'package:devcamper/controllers/bootcamp/bootcamp.dart';
+import 'package:devcamper/manage_review/add_review.dart';
 import 'package:devcamper/manage_review/edit_review.dart';
 import 'package:devcamper/manage_review/submit_review.dart';
 import 'package:devcamper/models/bootcamp/bootcamp_response_model.dart';
@@ -394,7 +395,7 @@ class _BootcampInfoState extends State<BootcampInfo> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: ((context) => EditReview(
+                                builder: ((context) => AddReview(
                                   bootcampTitle:bootcamp!.data!.name,
                                   bootcampId:bootcamp!.data!.id,
                                   bootcampRating:bootcamp!.data!.averageRating.toString()

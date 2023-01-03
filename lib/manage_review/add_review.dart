@@ -2,7 +2,6 @@ import 'package:devcamper/config.dart';
 import 'package:devcamper/controllers/reviews/review.dart';
 import 'package:devcamper/homepage.dart';
 import 'package:devcamper/manage_review/bootcamp_info.dart';
-import 'package:devcamper/manage_review/manage_review.dart';
 import 'package:devcamper/manage_review/submit_review.dart';
 import 'package:devcamper/models/review/review_request_model.dart';
 import 'package:devcamper/models/review/review_response_model.dart';
@@ -10,24 +9,17 @@ import 'package:flutter/material.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 
-class EditReview extends StatefulWidget {
+class AddReview extends StatefulWidget {
   String? bootcampTitle;
-  String? reviewId;
-  String? reviewRating;
-  String? reviewTitle;
-  String? reviewText;
-  EditReview(
-      {this.bootcampTitle,
-      this.reviewId,
-      this.reviewRating,
-      this.reviewTitle,
-      this.reviewText});
+  String? bootcampId;
+  String? bootcampRating;
+  AddReview({this.bootcampTitle, this.bootcampId, this.bootcampRating});
 
   @override
-  State<EditReview> createState() => _EditReviewState();
+  State<AddReview> createState() => _AddReviewState();
 }
 
-class _EditReviewState extends State<EditReview> {
+class _AddReviewState extends State<AddReview> {
   int _slidervalue = 2;
   final _title = TextEditingController();
   final _text = TextEditingController();
@@ -35,13 +27,6 @@ class _EditReviewState extends State<EditReview> {
   bool ishover = false;
   bool isAPIcallProcess = false;
   GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
-  @override
-  void initState() {
-    super.initState();
-    _title.text = widget.reviewTitle.toString();
-    _text.text = widget.reviewText.toString();
-    _slidervalue = int.parse(widget.reviewRating.toString());
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -287,8 +272,8 @@ class _EditReviewState extends State<EditReview> {
                               rating: _slidervalue,
                               text: _text.text,
                             );
-                            ReviewService.updateReviews(
-                                    model, widget.reviewId)
+                            ReviewService.postBootcampReview(
+                                    model, widget.bootcampId)
                                 .then((response) => {
                                       setState(() {
                                         isAPIcallProcess = false;
@@ -299,7 +284,13 @@ class _EditReviewState extends State<EditReview> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: ((context) =>
-                                                      ManageReview())))
+                                                      SubmitReview(
+                                                          bootcampTitle: widget
+                                                              .bootcampTitle,
+                                                          bootcampId:
+                                                              widget.bootcampId,
+                                                          bootcampRating:
+                                                              '${widget.bootcampRating}'))))
                                         }
                                       else
                                         {

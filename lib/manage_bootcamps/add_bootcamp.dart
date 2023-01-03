@@ -1,6 +1,7 @@
 import 'package:devcamper/config.dart';
 import 'package:devcamper/controllers/bootcamp/bootcamp.dart';
 import 'package:devcamper/homepage.dart';
+import 'package:devcamper/manage_bootcamps/manage_bootcamp.dart';
 import 'package:devcamper/models/bootcamp/bootcamp_request_model.dart';
 import 'package:flutter/material.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
@@ -628,7 +629,7 @@ class _AddBootcampState extends State<AddBootcamp> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: ((context) => HomePage())))
+                                    builder: ((context) => ManageBootcapm())))
                           }
                         else
                           {
