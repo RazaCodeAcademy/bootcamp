@@ -492,7 +492,6 @@ class _EditBootcampDetailState extends State<EditBootcampDetail> {
                                               } else {
                                                 isselect.add(careers[index]);
                                               }
-                                              print(isselect);
                                               colorchange = true;
                                             });
                                           },

@@ -35,7 +35,7 @@ class BootcampService {
       "Access-Control-Allow-Credentials": true.toString(),
     };
 
-    var url = Uri.parse(Config.apiURL + Config.bootcampsAPI+"/" + bootcampId);
+    var url = Uri.parse("${Config.apiURL}${Config.bootcampsAPI}/" + bootcampId);
 
     var response = await client.get(url, headers: requestHeaders);
 
@@ -68,7 +68,7 @@ class BootcampService {
       "Authorization": "Bearer ${loginDetails[0]}"
     };
 
-    var url = Uri.parse(Config.apiURL + Config.bootcampsAPI+"/");
+    var url = Uri.parse("${Config.apiURL}${Config.bootcampsAPI}/");
 
     var response = await client.post(url,
         headers: requestHeaders, body: jsonEncode(model));
@@ -86,7 +86,7 @@ class BootcampService {
       "Authorization": "Bearer ${loginDetails[0]}"
     };
 
-    var url = Uri.parse(Config.apiURL + Config.bootcampsAPI+"/" + bootcampId);
+    var url = Uri.parse("${Config.apiURL}${Config.bootcampsAPI}/" + bootcampId);
 
     var response =
         await client.put(url, headers: requestHeaders, body: jsonEncode(model));
@@ -103,7 +103,7 @@ class BootcampService {
       "Authorization": "Bearer ${loginDetails[0]}"
     };
 
-    var url = Uri.parse(Config.apiURL + Config.bootcampsAPI+"/" + bootcampId);
+    var url = Uri.parse("${Config.apiURL}${Config.bootcampsAPI}/" + bootcampId);
 
     var response =
         await client.delete(url, headers: requestHeaders);
@@ -115,8 +115,7 @@ class BootcampService {
     return false;
   }
 
-  static Future<bool> updateBootcampPhoto(File? file, bootcampId) async {
-    // print(file);
+  static Future<PhotoResponseModel> updateBootcampPhoto(file, bootcampId) async {
     var loginDetails = await LoginSharedService.loginDetails();
     Map<String, String> requestHeaders = {
       "Content-Type": "application/json",
@@ -125,29 +124,13 @@ class BootcampService {
       "Authorization": "Bearer ${loginDetails[0]}"
     };
 
-    var stream = http.ByteStream(file!.openRead());
-    var length = await file.length();
+    var url = Uri.parse("${Config.apiURL + Config.bootcampsAPI+"/" + bootcampId}/photo");
 
-    var url =
-        Uri.parse("${Config.apiURL + Config.bootcampsAPI+"/" + bootcampId}/photo");
+    var response =
+        await client.put(url, headers: requestHeaders, body: jsonEncode({
+          'file': file
+        }));
 
-    var request = http.MultipartRequest('put', url);
-
-    request.fields['title'] = 'static title';
-
-    var multiport = http.MultipartFile('file', stream, length);
-
-    request.files.add(multiport);
-
-    var response = await request.send();
-
-    if (response.statusCode == 200) {
-      return true;
-    } else {
-      return true;
-    }
-
-    // var response = await client.put(url,
-    //     headers: requestHeaders, body: file?.readAsBytesSync());
+    return photoResponseJson(response.body);
   }
 }

@@ -10,6 +10,8 @@ class Config {
   static const String loginAPI = "/auth/login";
   static const String registerAPI = "/auth/register";
   static const String userProfileAPI = "/auth/me";
+  static const String userProfileUpdateAPI = "/auth/update-details";
+  static const String userPasswordUpdateAPI = "/auth/update-password";
 
   // bootcamp apis
   static const String bootcampsAPI = "/bootcamps";

@@ -48,7 +48,7 @@ class _ManageCourseState extends State<ManageCourse> {
         backgroundColor: Color(0xffE05433),
         elevation: 0,
       ),
-      body: Padding(
+      body: bootcamp != null ? Padding(
         padding: EdgeInsets.only(
             left: size.width * 0.02,
             right: size.width * 0.02,
@@ -310,7 +310,7 @@ class _ManageCourseState extends State<ManageCourse> {
                 : Text('')
           ],
         ),
-      ),
+      ): Text(''),
     );
   }
 }

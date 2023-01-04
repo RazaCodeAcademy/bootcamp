@@ -20,7 +20,6 @@ class _AddBootcampCourseState extends State<AddBootcampCourse> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print(widget.bootcampId);
   }
   final _title = TextEditingController();
   final _duration = TextEditingController();
@@ -398,7 +397,6 @@ class _AddBootcampCourseState extends State<AddBootcampCourse> {
                       ),
                       onPressed: () {
                         if (validateAndSave()) {
-                          print(widget.bootcampId);
                           setState(() {
                             isAPIcallProcess = true;
                             CourseRequestModel model = CourseRequestModel(

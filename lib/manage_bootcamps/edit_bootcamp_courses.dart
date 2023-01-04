@@ -74,7 +74,7 @@ class _EditBootcampCourseState extends State<EditBootcampCourse> {
 
   Widget _courseUI(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return SingleChildScrollView(
+    return course != null ? SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.only(
             left: size.width * 0.02,
@@ -465,7 +465,7 @@ class _EditBootcampCourseState extends State<EditBootcampCourse> {
           ],
         ),
       ),
-    );
+    ): Text('');
   }
 
   bool validateAndSave() {

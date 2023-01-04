@@ -31,7 +31,6 @@ class _SubmitReviewState extends State<SubmitReview> {
   ReadReviewsResponseModel? reviews;
   void getBootcampReviews() async {
     reviews = await ReviewService.getBootcampReviews(widget.bootcampId);
-    print(reviews);
     setState(() {});
   }
 

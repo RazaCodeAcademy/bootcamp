@@ -463,7 +463,6 @@ class _AddBootcampState extends State<AddBootcamp> {
                                               } else {
                                                 isselect.add(careers[index]);
                                               }
-                                              print(isselect);
                                               colorchange = true;
                                             });
                                           },
